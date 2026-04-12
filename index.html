@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can our executive content system fit your brand? | RallyUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:  #09090b; --s1: #111114; --s2: #18181c;
+      --b1:  rgba(255,255,255,.08); --b2: rgba(255,255,255,.18);
+      --t1:  #f4f4f5; --t2: #a1a1aa; --t3: #71717a;
+      --ac:  #5B6FFF; --ac2: rgba(91,111,255,.15);
+      --lm:  #D8EC6A; --lm2: rgba(216,236,106,.12);
+      --red: #ef4444; --red2: rgba(239,68,68,.12);
+    }
+    html, body { background: var(--bg); color: var(--t1); font-family: 'DM Sans', sans-serif; min-height: 100dvh; }
+
+    /* PROGRESS */
+    .pt { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 3px; background: var(--s2); opacity: 0; transition: opacity .3s; }
+    .pt.on { opacity: 1; }
+    .pf { height: 100%; background: var(--lm); transition: width .45s cubic-bezier(.4,0,.2,1); border-radius: 0 2px 2px 0; }
+
+    /* HEADER */
+    .hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 99; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: linear-gradient(to bottom, var(--bg) 60%, transparent); }
+    .bk { background: none; border: none; color: var(--t3); font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 500; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: color .2s, background .2s; opacity: 0; pointer-events: none; }
+    .bk.on { opacity: 1; pointer-events: auto; }
+    .bk:hover { color: var(--t1); background: var(--s2); }
+    .logo-img { height: 22px; display: block; }
+    .sl { font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--t3); opacity: 0; transition: opacity .3s; min-width: 80px; text-align: right; }
+    .sl.on { opacity: 1; }
+
+    /* LAYOUT */
+    .app { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; }
+    .wrap { width: 100%; max-width: 540px; padding: 80px 20px 60px; }
+
+    /* STEPS */
+    .step { display: none; flex-direction: column; animation: fadeIn .35s ease forwards; }
+    .step.active { display: flex; }
+    .step.bwd { animation: fadeInBwd .35s ease forwards; }
+    @keyframes fadeIn    { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: none; } }
+    @keyframes fadeInBwd { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: none; } }
+
+    /* INTRO */
+    .intro { display: flex; flex-direction: column; gap: 24px; padding-top: 12px; }
+    .badge { display: inline-flex; align-items: center; gap: 7px; background: var(--lm2); border: 1px solid var(--lm); border-radius: 20px; padding: 5px 12px; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--lm); width: fit-content; }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--lm); animation: blink 1.8s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+    .intro h1 { font-size: clamp(1.9rem, 6vw, 2.6rem); font-weight: 800; line-height: 1.18; letter-spacing: -.02em; }
+    .offer-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+    .offer-card > p { font-size: .92rem; color: var(--t2); line-height: 1.6; }
+    .offer-steps { display: flex; flex-direction: column; gap: 10px; }
+    .offer-step { display: flex; align-items: flex-start; gap: 12px; }
+    .os-num { width: 22px; height: 22px; border-radius: 50%; background: var(--ac2); border: 1px solid var(--ac); color: var(--ac); font-size: .7rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .os-text { font-size: .88rem; color: var(--t2); line-height: 1.5; }
+    .os-text strong { color: var(--t1); font-weight: 600; }
+    .btn { width: 100%; padding: 16px; background: var(--lm); color: #09090b; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all .18s; }
+    .btn:hover { opacity: .88; transform: translateY(-1px); }
+    .fp { text-align: center; font-size: .74rem; color: var(--t3); letter-spacing: .02em; }
+
+    /* QUESTION SLIDES */
+    .q-tag { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ac); margin-bottom: 8px; }
+    .q-h { font-size: clamp(1.2rem, 4vw, 1.55rem); font-weight: 800; line-height: 1.3; letter-spacing: -.015em; margin-bottom: 6px; }
+    .q-sub { font-size: .85rem; color: var(--t3); margin-bottom: 18px; line-height: 1.5; }
+
+    /* SINGLE SELECT */
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt { display: flex; align-items: flex-start; gap: 14px; background: var(--s1); border: 1.5px solid var(--b1); border-radius: 14px; padding: 14px 16px; cursor: pointer; transition: all .18s; }
+    .opt:hover { border-color: var(--b2); background: var(--s2); }
+    .opt.sel { border-color: var(--ac); background: var(--ac2); }
+    .opt.disq:hover { border-color: rgba(239,68,68,.35); background: var(--red2); }
+    .opt.disq.sel { border-color: var(--red); background: var(--red2); }
+    .oi { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+    .ot { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+    .ot strong { font-size: .92rem; font-weight: 700; color: var(--t1); }
+    .ot span { font-size: .78rem; color: var(--t3); line-height: 1.45; }
+    .ck { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--b2); background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; margin-top: 2px; }
+    .ck svg { width: 12px; height: 10px; opacity: 0; transition: opacity .15s; }
+    .opt.sel .ck { background: var(--ac); border-color: var(--ac); }
+    .opt.sel .ck svg { opacity: 1; }
+    .opt.disq.sel .ck { background: var(--red); border-color: var(--red); }
+
+    /* MULTI SELECT */
+    .multi-hint { font-size: .78rem; color: var(--t3); margin-bottom: 14px; }
+    .multi-opts { display: flex; flex-direction: column; gap: 8px; }
+    .mopt { display: flex; align-items: center; gap: 12px; background: var(--s1); border: 1.5px solid var(--b1); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: all .18s; }
+    .mopt:hover { border-color: var(--b2); background: var(--s2); }
+    .mopt.sel { border-color: var(--lm); background: var(--lm2); }
+    .moi { font-size: 1.1rem; flex-shrink: 0; }
+    .mot { flex: 1; font-size: .88rem; font-weight: 500; color: var(--t1); }
+    .mbox { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--b2); background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
+    .mbox svg { width: 12px; height: 10px; opacity: 0; transition: opacity .15s; }
+    .mopt.sel .mbox { background: var(--lm); border-color: var(--lm); }
+    .mopt.sel .mbox svg { opacity: 1; }
+    .err { display: none; color: var(--red); font-size: .78rem; margin-top: 6px; }
+    .btn-next { width: 100%; margin-top: 16px; padding: 15px; background: var(--ac); color: #fff; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: .95rem; font-weight: 800; cursor: pointer; transition: all .18s; }
+    .btn-next:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+    .btn-next:disabled { opacity: .35; cursor: not-allowed; transform: none !important; }
+
+    /* TEXTAREA */
+    .context-area { width: 100%; background: var(--s1); border: 1.5px solid var(--b1); border-radius: 14px; padding: 14px 16px; color: var(--t1); font-family: 'DM Sans', sans-serif; font-size: .92rem; line-height: 1.6; resize: vertical; min-height: 110px; outline: none; transition: border-color .2s; }
+    .context-area:focus { border-color: var(--ac); box-shadow: 0 0 0 3px var(--ac2); }
+    .context-area::placeholder { color: var(--t3); }
+    .context-hint { font-size: .78rem; color: var(--t3); margin-top: 6px; line-height: 1.5; }
+
+    /* FINAL SLIDE */
+    .final-h { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; line-height: 1.25; letter-spacing: -.015em; margin-bottom: 10px; }
+    .final-sub { font-size: .9rem; color: var(--t2); line-height: 1.65; margin-bottom: 24px; }
+    .section-label { font-size: .82rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ac); margin-bottom: 8px; }
+    .email-row { display: flex; gap: 10px; margin-bottom: 8px; }
+    .email-input { flex: 1; background: var(--s1); border: 1.5px solid var(--b1); border-radius: 12px; padding: 14px 16px; color: var(--t1); font-family: 'DM Sans', sans-serif; font-size: .92rem; outline: none; transition: border-color .2s; }
+    .email-input:focus { border-color: var(--ac); box-shadow: 0 0 0 3px var(--ac2); }
+    .email-input::placeholder { color: var(--t3); }
+    .btn-email { background: var(--lm); color: #09090b; border: none; border-radius: 12px; padding: 14px 22px; font-family: 'DM Sans', sans-serif; font-size: .92rem; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all .18s; flex-shrink: 0; }
+    .btn-email:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+    .btn-email:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
+    .email-err { display: none; color: var(--red); font-size: .78rem; margin-bottom: 16px; }
+    .cal-wrap { width: 100%; background: var(--s1); border: 1px solid var(--b1); border-radius: 16px; overflow: hidden; display: none; margin-top: 20px; }
+    .cal-wrap.on { display: block; }
+    .cal-wrap iframe { display: block; }
+    .cal-label { font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--t3); text-align: center; padding: 14px 0 10px; border-bottom: 1px solid var(--b1); }
+    .scar { display: none; align-items: center; justify-content: center; gap: 7px; font-size: .74rem; color: var(--t3); margin-top: 12px; }
+    .scar.on { display: flex; }
+    .sdot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: blink 1.5s infinite; }
+
+    /* DISQUALIFICATION SLIDE */
+    .disq-wrap { display: flex; flex-direction: column; gap: 20px; padding-top: 8px; }
+    .disq-icon { font-size: 2.8rem; }
+    .disq-h { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; line-height: 1.25; letter-spacing: -.015em; }
+    .disq-body { font-size: .92rem; color: var(--t2); line-height: 1.7; }
+    .disq-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; }
+    .disq-card-label { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--lm); }
+    .disq-card-body { font-size: .88rem; color: var(--t2); line-height: 1.6; }
+    .btn-masterclass { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; background: var(--lm); color: #09090b; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all .18s; text-decoration: none; }
+    .btn-masterclass:hover { opacity: .88; transform: translateY(-1px); }
+
+    @media (max-width: 480px) {
+      .intro h1, .disq-h { font-size: 1.7rem; }
+      .q-h { font-size: 1.2rem; }
+      .final-h { font-size: 1.4rem; }
+      .email-row { flex-direction: column; }
+      .btn-email { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="pt" id="pt"><div class="pf" id="pf"></div></div>
+
+  <div class="hdr">
+    <button class="bk" id="bk" onclick="goBack()">&#8592; Back</button>
+    <img src="/assets/logo.png" alt="RallyUp" class="logo-img">
+    <div class="sl" id="sl"></div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- SLIDE 0: INTRO -->
+    <div class="step active" id="s0">
+      <div class="intro">
+        <div class="badge">5 spots open this month</div>
+        <h1>Can our executive content<br><span style="color:var(--lm)">system fit your brand?</span></h1>
+        <div class="offer-card">
+          <p>We'll build the entire system prior to the call, during which we will:</p>
+          <div class="offer-steps">
+            <div class="offer-step">
+              <div class="os-num">1</div>
+              <div class="os-text"><strong>Show you how to use the system</strong> by creating 3&ndash;5 posts for you.</div>
+            </div>
+            <div class="offer-step">
+              <div class="os-num">2</div>
+              <div class="os-text"><strong>Give you the system for FREE.</strong></div>
+            </div>
+            <div class="offer-step">
+              <div class="os-num">3</div>
+              <div class="os-text"><strong>Optional:</strong> show you our managed service so you never need to worry about content again.</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn" onclick="go(1, 's1')">Let's find out &rarr;</button>
+        <p class="fp">4 steps &middot; Takes 90 seconds &middot; Reviewed personally</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 1: Q1 — QUALIFYING GATE -->
+    <div class="step" id="s1">
+      <p class="q-tag">Step 1 of 4</p>
+      <h2 class="q-h">What are you looking to solve?</h2>
+      <p class="q-sub">Pick the option that best describes your situation.</p>
+      <div class="opts">
+
+        <div class="opt" onclick="pickQ1(this, 'I want my executive team showing up on LinkedIn', true)">
+          <div class="oi">&#127970;</div>
+          <div class="ot">
+            <strong>I want my executive team showing up on LinkedIn</strong>
+            <span>Our C-suite / VPs should be posting but they're not — I need a system to make it happen.</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <div class="opt" onclick="pickQ1(this, 'I am a founder or exec who needs to start posting consistently', true)">
+          <div class="oi">&#127775;</div>
+          <div class="ot">
+            <strong>I'm a founder / exec who needs to start posting consistently</strong>
+            <span>I know I should be on LinkedIn but I don't have the time or system to do it well.</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <div class="opt disq" onclick="pickQ1(this, 'I want help with my own personal brand', false)">
+          <div class="oi">&#128100;</div>
+          <div class="ot">
+            <strong>I want help with my own personal brand</strong>
+            <span>I'm looking to grow my thought leadership on LinkedIn.</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <div class="opt disq" onclick="pickQ1(this, 'I am exploring what is possible', false)">
+          <div class="oi">&#128270;</div>
+          <div class="ot">
+            <strong>I'm exploring what's possible</strong>
+            <span>Just curious about how AI + LinkedIn content works.</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SLIDE DISQ: NOT A FIT -->
+    <div class="step" id="s_disq">
+      <div class="disq-wrap">
+        <div class="disq-icon">&#128591;</div>
+        <h2 class="disq-h">Not the right fit right now — <span style="color:var(--lm)">but here's something better.</span></h2>
+        <p class="disq-body">Our sessions are built for teams and execs who are ready to turn LinkedIn into a pipeline channel. Based on where you are today, we'd be taking up your time without delivering the value you deserve. That's not how we operate.</p>
+        <div class="disq-card">
+          <p class="disq-card-label">&#127775;&nbsp; Free resource for you</p>
+          <p class="disq-card-body">We put together a free masterclass covering exactly how AI-powered LinkedIn content works — the frameworks, the systems, and what it takes to go from invisible to consistent. No call required, and you keep everything.</p>
+        </div>
+        <a href="https://content-masterclass.vercel.app/" target="_blank" class="btn-masterclass">
+          Access the free masterclass &rarr;
+        </a>
+        <p class="fp">Free &middot; No email required &middot; Start instantly</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: PRIMARY GOAL -->
+    <div class="step" id="s2">
+      <p class="q-tag">Step 2 of 4</p>
+      <h2 class="q-h">What's your primary goal with posting?</h2>
+      <p class="q-sub">This shapes what we build for you on the call.</p>
+      <div class="opts">
+
+        <div class="opt" onclick="pickGoal(this, 'Sales pipeline')">
+          <div class="oi">&#128176;</div>
+          <div class="ot">
+            <strong>Sales pipeline</strong>
+            <span>Turn LinkedIn content into inbound leads and demos</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <div class="opt" onclick="pickGoal(this, 'Brand awareness')">
+          <div class="oi">&#128293;</div>
+          <div class="ot">
+            <strong>Brand awareness</strong>
+            <span>Get the company and its leaders known in the market</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <div class="opt" onclick="pickGoal(this, 'Lead generation')">
+          <div class="oi">&#127919;</div>
+          <div class="ot">
+            <strong>Lead generation</strong>
+            <span>Build a consistent top-of-funnel from organic content</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <div class="opt" onclick="pickGoal(this, 'Recruiting')">
+          <div class="oi">&#127775;</div>
+          <div class="ot">
+            <strong>Recruiting</strong>
+            <span>Attract top talent through executive and company presence</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <div class="opt" onclick="pickGoal(this, 'Thought leadership')">
+          <div class="oi">&#128161;</div>
+          <div class="ot">
+            <strong>Thought leadership</strong>
+            <span>Position executives as credible voices in the industry</span>
+          </div>
+          <div class="ck"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SLIDE 3: WHAT HAVE YOU TRIED (multi-select) -->
+    <div class="step" id="s3">
+      <p class="q-tag">Step 3 of 4</p>
+      <h2 class="q-h">What have you tried so far to crack LinkedIn content?</h2>
+      <p class="multi-hint">&#9997;&#65039;&nbsp; Select all that apply</p>
+      <div class="multi-opts">
+        <div class="mopt" onclick="toggleQ3(this, 'Used AI to generate content')">
+          <div class="moi">&#129302;</div><div class="mot">Used AI to generate content</div>
+          <div class="mbox"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mopt" onclick="toggleQ3(this, 'Developed my own system')">
+          <div class="moi">&#128295;</div><div class="mot">Developed my own system</div>
+          <div class="mbox"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mopt" onclick="toggleQ3(this, 'Used a SaaS tool')">
+          <div class="moi">&#128187;</div><div class="mot">Used a SaaS tool</div>
+          <div class="mbox"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mopt" onclick="toggleQ3(this, 'Hired a ghostwriter')">
+          <div class="moi">&#9999;&#65039;</div><div class="mot">Hired a ghostwriter</div>
+          <div class="mbox"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mopt" onclick="toggleQ3(this, 'Hired an agency')">
+          <div class="moi">&#127970;</div><div class="mot">Hired an agency</div>
+          <div class="mbox"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mopt" onclick="toggleQ3(this, 'Let the marketing team handle it')">
+          <div class="moi">&#128101;</div><div class="mot">Let the marketing team handle it</div>
+          <div class="mbox"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="mopt" onclick="toggleQ3(this, &quot;Haven&apos;t done anything yet&quot;)">
+          <div class="moi">&#128528;</div><div class="mot">I haven't done anything yet</div>
+          <div class="mbox"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <div class="err" id="e3">Please select at least one option.</div>
+      <button class="btn-next" id="btn-q3" onclick="goS4()" disabled>Continue &rarr;</button>
+    </div>
+
+    <!-- SLIDE 4: PRE-CALL CONTEXT + EMAIL + CALENDAR -->
+    <div class="step" id="s4">
+      <h2 class="final-h">Congrats, you're a fit. &#127881;<br><span style="color:var(--lm)">Book your free session.</span></h2>
+      <p class="final-sub">We'll build your content system before we meet. In 20 minutes, you'll watch it create posts live in your exec's specific voice. You keep everything either way.</p>
+
+      <p class="section-label">Your first post topic <span style="color:var(--red)">*</span></p>
+      <p style="font-size:.88rem;color:var(--t2);line-height:1.55;margin-bottom:12px;">Share your topic and we'll write a post about it before the call. The more context the better.</p>
+      <textarea class="context-area" id="ctx" placeholder="What do you want to post about?" maxlength="800"></textarea>
+      <p class="context-hint" id="ctx-err" style="display:none;color:var(--red);">Please add a topic so we can prepare your draft.</p>
+
+      <p class="section-label" style="margin-top:22px;">Your email</p>
+      <div class="email-row">
+        <input type="email" class="email-input" id="em" placeholder="Your work email" autocomplete="email">
+        <button class="btn-email" id="btn-em" onclick="submitFinal()">Confirm &rarr;</button>
+      </div>
+      <p class="email-err" id="email-err">Please enter a valid email address.</p>
+
+      <div class="cal-wrap" id="cal-wrap">
+        <p class="cal-label">&#128197;&nbsp; Pick a time that works for you</p>
+        <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3mqHGQZgPSt_CE7Xz_GhF7wyvx4WGRdv6XqxBvrd4WxYjJhDLd4B-NoFRjMJXgC98-MYr8sBio?gv=true" style="border: 0" width="100%" height="600" frameborder="0"></iframe>
+      </div>
+      <div class="scar" id="scar">
+        <div class="sdot"></div>
+        <span>3 of 5 spots claimed this week. First come, first served.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Replace this with your new Apps Script deployment URL after running setup
+  const ASU = 'https://script.google.com/macros/s/AKfycbyKUbG5NcjUmN-Q5ab9XG2SUzuMs2n8q4fdNZGztek3StNaDS1wa3unRtl8IF43f3kx/exec';
+
+  const st = { q1: '', qualified: false, goal: '', q3: [], context: '', email: '' };
+  const SLIDE_STEP = { s0: 0, s1: 1, s2: 2, s3: 3, s4: 4, s_disq: 0 };
+  const hist = ['s0'];
+  let busy = false;
+  let submitted = false;
+
+  function ui(id) {
+    const n = SLIDE_STEP[id] || 0;
+    const inForm = n >= 1 && n <= 4;
+    document.getElementById('pt').classList.toggle('on', inForm);
+    document.getElementById('bk').classList.toggle('on', id !== 's0' && id !== 's_disq');
+    document.getElementById('sl').classList.toggle('on', inForm);
+    if (inForm) {
+      document.getElementById('pf').style.width = (n / 4 * 100) + '%';
+      const labels = { 1:'Step 1 of 4', 2:'Step 2 of 4', 3:'Step 3 of 4', 4:'Almost done' };
+      document.getElementById('sl').textContent = labels[n] || '';
+    }
+  }
+
+  function show(id, dir) {
+    document.querySelectorAll('.step').forEach(s => { s.classList.remove('active','bwd'); s.style.display='none'; });
+    const el = document.getElementById(id);
+    el.style.display = 'flex'; void el.offsetWidth;
+    if (dir === 'b') el.classList.add('bwd');
+    el.classList.add('active');
+  }
+
+  function go(n, id) {
+    const slideId = id || ('s' + n);
+    hist.push(slideId); ui(slideId); show(slideId, 'f');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goBack() {
+    hist.pop();
+    const prev = hist[hist.length - 1] || 's0';
+    ui(prev); show(prev, 'b');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Q1 — Qualifying gate
+  function pickQ1(el, value, qualified) {
+    if (busy) return;
+    el.closest('.opts').querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+    st.q1 = value;
+    st.qualified = qualified;
+    busy = true;
+    setTimeout(() => {
+      busy = false;
+      if (qualified) {
+        go(2, 's2');
+      } else {
+        logDisqualified();
+        go(0, 's_disq');
+      }
+    }, 400);
+  }
+
+  // Goal
+  function pickGoal(el, value) {
+    if (busy) return;
+    el.closest('.opts').querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+    st.goal = value;
+    busy = true;
+    setTimeout(() => { busy = false; go(3, 's3'); }, 400);
+  }
+
+  // Q3 multi-select
+  function toggleQ3(el, value) {
+    el.classList.toggle('sel');
+    if (el.classList.contains('sel')) { if (!st.q3.includes(value)) st.q3.push(value); }
+    else { st.q3 = st.q3.filter(v => v !== value); }
+    document.getElementById('btn-q3').disabled = st.q3.length === 0;
+    document.getElementById('e3').style.display = 'none';
+  }
+
+  function goS4() {
+    if (st.q3.length === 0) { document.getElementById('e3').style.display = 'block'; return; }
+    go(4, 's4');
+  }
+
+  // Final submit
+  async function submitFinal() {
+    if (submitted) return;
+    const em = document.getElementById('em').value.trim();
+    const errEl = document.getElementById('email-err');
+    if (!em || !em.includes('@') || !em.includes('.')) { errEl.style.display = 'block'; return; }
+    errEl.style.display = 'none';
+    st.email = em;
+    st.context = document.getElementById('ctx').value.trim();
+
+    const ctx = document.getElementById('ctx').value.trim();
+    const ctxErr = document.getElementById('ctx-err');
+    if (!ctx) { ctxErr.style.display = 'block'; document.getElementById('ctx').focus(); return; }
+    ctxErr.style.display = 'none';
+
+    const btn = document.getElementById('btn-em');
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    await postToSheet({
+      timestamp: new Date().toISOString(),
+      email: st.email,
+      qualified: 'Yes',
+      q1: st.q1,
+      goal: st.goal,
+      what_tried: st.q3.join(', '),
+      context: st.context
+    });
+
+    btn.textContent = 'Confirmed \u2713';
+    submitted = true;
+    document.getElementById('cal-wrap').classList.add('on');
+    document.getElementById('scar').classList.add('on');
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+
+  // Log disqualified (no email collected)
+  async function logDisqualified() {
+    await postToSheet({
+      timestamp: new Date().toISOString(),
+      email: '',
+      qualified: 'No',
+      q1: st.q1,
+      role: '',
+      what_tried: '',
+      context: ''
+    });
+  }
+
+  async function postToSheet(payload) {
+    try {
+      await fetch(ASU, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) { console.warn('Sheet post failed:', e); }
+  }
+</script>
+</body>
+</html>
